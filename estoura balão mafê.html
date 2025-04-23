@@ -1,0 +1,167 @@
+<!-- CÓDIGO HTML COM JS COMPLETO CORRIGIDO -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coletando as qualidades!</title>
+  <style>
+    body {
+      background-color: rgb(94, 144, 163);
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+
+    .word, .special-message {
+      padding: 10px 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(0, 0, 0);
+      border-radius: 25px;
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.5s;
+    }
+
+    .word {
+      background: rgb(113, 11, 11);
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .special-message {
+      padding: 15px 30px;
+      font-size: 24px;
+      color: gold;
+      background: linear-gradient(45deg, rgb(113, 11, 11), rgb(164, 59, 59));
+      border-radius: 30px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .heart {
+      position: absolute;
+      color: red;
+      font-size: 24px;
+      animation: float 1s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-50px); opacity: 0; }
+    }
+
+    #score {
+      font-size: 26px;
+      font-weight: bold;
+      margin: 20px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h1>As qualidades de Mafê</h1>
+  <h2>Nos balões de letra dourada, clique repetidas vezes para estourar</h2>
+
+  <div id="score">Pontuação: 0</div>
+
+  <script>
+    let score = 0;
+
+    function getRandomWord() {
+      const prefixes = ["Super", "Mega", "Ultra", "Incrivelmente", "Maravilhosamente", "Extremamente"];
+      const adjectives = ["Inteligente", "Forte", "Gentil", "Engraçada", "Carinhosa", "Criativa", "Brilhante", "Amável", "Especial", "Incrível", "Inspiradora", "Talentosa", "Dedicada", "Carismática", "Encantadora"];
+      return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${adjectives[Math.floor(Math.random() * adjectives.length)]}`;
+    }
+
+    function createWord() {
+      const word = document.createElement('div');
+      word.classList.add('word');
+      word.textContent = getRandomWord();
+      document.body.appendChild(word);
+
+      let x = Math.random() * (window.innerWidth - 100);
+      word.style.left = `${x}px`;
+
+      let pos = -50;
+      word.style.top = `${pos}px`;
+
+      let speed = Math.random() * 3 + 2;
+      let interval = setInterval(() => {
+        pos += speed;
+        word.style.top = `${pos}px`;
+        if (pos > document.documentElement.clientHeight) {
+          clearInterval(interval);
+          word.remove();
+        }
+      }, 20);
+
+      word.addEventListener('click', () => {
+        score++;
+        document.getElementById('score').textContent = `Pontuação: ${score}`;
+        word.remove();
+        clearInterval(interval);
+      });
+    }
+
+    function createSpecialMessage() {
+      const message = document.createElement('div');
+      message.classList.add('special-message');
+      message.textContent = "Você é incrível! Nunca se esqueça disso!";
+      document.body.appendChild(message);
+
+      let x = Math.random() * (window.innerWidth - 200);
+      message.style.left = `${x}px`;
+
+      let pos = -60;
+      message.style.top = `${pos}px`;
+
+      let size = 1;
+      let interval = setInterval(() => {
+        pos += 1;
+        message.style.top = `${pos}px`;
+        if (pos > document.documentElement.clientHeight) {
+          clearInterval(interval);
+          message.remove();
+        }
+      }, 30);
+
+      message.addEventListener('click', () => {
+        size += 0.2;
+        message.style.transform = `scale(${size})`;
+        if (size >= 2) {
+          explodeMessage(message);
+          clearInterval(interval);
+        }
+      });
+    }
+
+    function explodeMessage(message) {
+      for (let i = 0; i < 10; i++) {
+        createHeart(message.offsetLeft + 50, message.offsetTop);
+      }
+      message.remove();
+    }
+
+    function createHeart(x, y) {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.textContent = "❤️";
+      document.body.appendChild(heart);
+
+      heart.style.left = `${x + Math.random() * 50 - 25}px`;
+      heart.style.top = `${y}px`;
+
+      setTimeout(() => heart.remove(), 1000);
+    }
+
+    setInterval(createWord, 1000);
+    setInterval(createSpecialMessage, 15000);
+  </script>
+</body>
+</html>
